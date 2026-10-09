@@ -16,7 +16,17 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y xvfb libegl1 libgl1 libopengl0 libgl1-mesa-dri \
             libxcb-cursor0 libxkbcommon-x11-0 libxcb-icccm4 libxcb-keysyms1 \
-            libxcb-image0 libxcb-render-util0 libxcb-xinerama0
+            libxcb-image0 libxcb-render-util0 libxcb-xinerama0 libxcb-randr0 \
+            libxcb-shape0 libxcb-sync1 libxcb-xfixes0 libx11-xcb1 libdbus-1-3
+      - name: Verify Qt platform dependencies
+        run: |
+          python - <<'PYTHON'
+          import pathlib, subprocess, PySide6
+          plugin = pathlib.Path(PySide6.__file__).parent / "Qt/plugins/platforms/libqxcb.so"
+          output = subprocess.check_output(["ldd", str(plugin)], text=True)
+          print(output)
+          assert "not found" not in output, "Missing Qt runtime library"
+          PYTHON
       - run: xvfb-run -a python scripts/check_dashboard.py
         env:
           LIBGL_ALWAYS_SOFTWARE: '1'
