@@ -1,0 +1,21 @@
+EE Jumper
+Copyright 2026 EE Jumper contributors.
+Licensed under the Apache License, Version 2.0 (see LICENSE).
+
+src/ee_jumper/assets/jumper/robot.xml and meshes/ are derived from:
+    Jumper — https://github.com/KingKongRobotics/jumper
+    Copyright 2026 KingKong Robotics.
+    Apache License, Version 2.0.
+    Pinned commit: 61d065219fca767f3142c8f10aff59eae5a5a004
+
+Changes: removed visual-only meshes and cameras; flattened mesh paths;
+rendered the retained collision meshes. Original kinematics, joint limits,
+torque limits, masses and inertias retained. Scene, servos and fluid settings
+are added by EE Jumper at runtime. See provenance.json for file hashes.
+
+The original upstream NOTICE is retained in docs/UPSTREAM_NOTICE.txt for
+provenance. The mjlab, rsl_rl, Isaac Lab, Menagerie, pfrl and Rockchip code
+mentioned there is NOT distributed by this project. Runtime dependencies
+are installed separately under their respective licenses.
+
+This is an independent project and is not endorsed by KingKong Robotics.

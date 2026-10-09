@@ -1,0 +1,407 @@
+{
+  "mujoco_version": "3.15.0",
+  "real_viewer": false,
+  "buoyancy_height_m": 0.01,
+  "cases": [
+    {
+      "case": "upright",
+      "seconds": 30.00000000001368,
+      "final_tilt_deg": 0.0,
+      "displacement_m": [
+        -3.469446951953614e-18,
+        1.2781727174067392e-18,
+        0.0
+      ],
+      "max_qpos_change": 1.4579252189423879e-15,
+      "trace": [
+        {
+          "seconds": 1.0,
+          "tilt_deg": 0.0
+        },
+        {
+          "seconds": 2.0,
+          "tilt_deg": 0.0
+        },
+        {
+          "seconds": 3.0,
+          "tilt_deg": 0.0
+        },
+        {
+          "seconds": 4.0,
+          "tilt_deg": 0.0
+        },
+        {
+          "seconds": 5.0,
+          "tilt_deg": 0.0
+        },
+        {
+          "seconds": 6.0,
+          "tilt_deg": 0.0
+        },
+        {
+          "seconds": 7.0,
+          "tilt_deg": 0.0
+        },
+        {
+          "seconds": 8.0,
+          "tilt_deg": 0.0
+        },
+        {
+          "seconds": 9.0,
+          "tilt_deg": 0.0
+        },
+        {
+          "seconds": 10.0,
+          "tilt_deg": 0.0
+        },
+        {
+          "seconds": 11.0,
+          "tilt_deg": 0.0
+        },
+        {
+          "seconds": 12.0,
+          "tilt_deg": 0.0
+        },
+        {
+          "seconds": 13.0,
+          "tilt_deg": 0.0
+        },
+        {
+          "seconds": 14.0,
+          "tilt_deg": 0.0
+        },
+        {
+          "seconds": 15.0,
+          "tilt_deg": 0.0
+        },
+        {
+          "seconds": 16.0,
+          "tilt_deg": 0.0
+        },
+        {
+          "seconds": 17.0,
+          "tilt_deg": 0.0
+        },
+        {
+          "seconds": 18.0,
+          "tilt_deg": 0.0
+        },
+        {
+          "seconds": 19.0,
+          "tilt_deg": 0.0
+        },
+        {
+          "seconds": 20.0,
+          "tilt_deg": 0.0
+        },
+        {
+          "seconds": 21.0,
+          "tilt_deg": 0.0
+        },
+        {
+          "seconds": 22.0,
+          "tilt_deg": 0.0
+        },
+        {
+          "seconds": 23.0,
+          "tilt_deg": 0.0
+        },
+        {
+          "seconds": 24.0,
+          "tilt_deg": 0.0
+        },
+        {
+          "seconds": 25.0,
+          "tilt_deg": 0.0
+        },
+        {
+          "seconds": 26.0,
+          "tilt_deg": 0.0
+        },
+        {
+          "seconds": 27.0,
+          "tilt_deg": 0.0
+        },
+        {
+          "seconds": 28.0,
+          "tilt_deg": 0.0
+        },
+        {
+          "seconds": 29.0,
+          "tilt_deg": 0.0
+        },
+        {
+          "seconds": 30.0,
+          "tilt_deg": 0.0
+        }
+      ]
+    },
+    {
+      "case": "roll_25deg",
+      "seconds": 30.00000000001368,
+      "final_tilt_deg": 0.03829053943409306,
+      "displacement_m": [
+        0.0005821984611692442,
+        0.06771086437635371,
+        -0.0019496726465707548
+      ],
+      "max_qpos_change": 0.24288802744046553,
+      "trace": [
+        {
+          "seconds": 1.0,
+          "tilt_deg": 2.55023751138122
+        },
+        {
+          "seconds": 2.0,
+          "tilt_deg": 2.0678263535875807
+        },
+        {
+          "seconds": 3.0,
+          "tilt_deg": 1.5606833741178714
+        },
+        {
+          "seconds": 4.0,
+          "tilt_deg": 1.156614310327605
+        },
+        {
+          "seconds": 5.0,
+          "tilt_deg": 0.747712017207414
+        },
+        {
+          "seconds": 6.0,
+          "tilt_deg": 0.42130495489557934
+        },
+        {
+          "seconds": 7.0,
+          "tilt_deg": 0.13783619508693706
+        },
+        {
+          "seconds": 8.0,
+          "tilt_deg": 0.06355638821784508
+        },
+        {
+          "seconds": 9.0,
+          "tilt_deg": 0.20481460882273317
+        },
+        {
+          "seconds": 10.0,
+          "tilt_deg": 0.27169536214795775
+        },
+        {
+          "seconds": 11.0,
+          "tilt_deg": 0.2902766615895302
+        },
+        {
+          "seconds": 12.0,
+          "tilt_deg": 0.2581285178252664
+        },
+        {
+          "seconds": 13.0,
+          "tilt_deg": 0.20256751580204788
+        },
+        {
+          "seconds": 14.0,
+          "tilt_deg": 0.1262913286953749
+        },
+        {
+          "seconds": 15.0,
+          "tilt_deg": 0.05147126696001715
+        },
+        {
+          "seconds": 16.0,
+          "tilt_deg": 0.019351679568829164
+        },
+        {
+          "seconds": 17.0,
+          "tilt_deg": 0.07173853273414116
+        },
+        {
+          "seconds": 18.0,
+          "tilt_deg": 0.10751766495702657
+        },
+        {
+          "seconds": 19.0,
+          "tilt_deg": 0.11983284910843392
+        },
+        {
+          "seconds": 20.0,
+          "tilt_deg": 0.11563912318285634
+        },
+        {
+          "seconds": 21.0,
+          "tilt_deg": 0.0937731158682992
+        },
+        {
+          "seconds": 22.0,
+          "tilt_deg": 0.06385482756592697
+        },
+        {
+          "seconds": 23.0,
+          "tilt_deg": 0.027549656205205136
+        },
+        {
+          "seconds": 24.0,
+          "tilt_deg": 0.00610036822280698
+        },
+        {
+          "seconds": 25.0,
+          "tilt_deg": 0.03578752344610155
+        },
+        {
+          "seconds": 26.0,
+          "tilt_deg": 0.05525619410560031
+        },
+        {
+          "seconds": 27.0,
+          "tilt_deg": 0.06572899328093375
+        },
+        {
+          "seconds": 28.0,
+          "tilt_deg": 0.0644250743489089
+        },
+        {
+          "seconds": 29.0,
+          "tilt_deg": 0.05527886345665014
+        },
+        {
+          "seconds": 30.0,
+          "tilt_deg": 0.03829053943409306
+        }
+      ]
+    },
+    {
+      "case": "pitch_25deg",
+      "seconds": 30.00000000001368,
+      "final_tilt_deg": 0.04188856291152108,
+      "displacement_m": [
+        -0.08611271906997907,
+        -0.006609992283108199,
+        -0.00887889760143512
+      ],
+      "max_qpos_change": 0.24056529320664916,
+      "trace": [
+        {
+          "seconds": 1.0,
+          "tilt_deg": 0.20089374147642214
+        },
+        {
+          "seconds": 2.0,
+          "tilt_deg": 0.4714073951222995
+        },
+        {
+          "seconds": 3.0,
+          "tilt_deg": 0.5599021878735233
+        },
+        {
+          "seconds": 4.0,
+          "tilt_deg": 0.5350430017765435
+        },
+        {
+          "seconds": 5.0,
+          "tilt_deg": 0.5061802605845923
+        },
+        {
+          "seconds": 6.0,
+          "tilt_deg": 0.4356039078586027
+        },
+        {
+          "seconds": 7.0,
+          "tilt_deg": 0.3766028349209404
+        },
+        {
+          "seconds": 8.0,
+          "tilt_deg": 0.2982833033682217
+        },
+        {
+          "seconds": 9.0,
+          "tilt_deg": 0.23384242493322432
+        },
+        {
+          "seconds": 10.0,
+          "tilt_deg": 0.16208782357141185
+        },
+        {
+          "seconds": 11.0,
+          "tilt_deg": 0.10506277192998814
+        },
+        {
+          "seconds": 12.0,
+          "tilt_deg": 0.047615863697006704
+        },
+        {
+          "seconds": 13.0,
+          "tilt_deg": 0.005070312980793446
+        },
+        {
+          "seconds": 14.0,
+          "tilt_deg": 0.034325017864210626
+        },
+        {
+          "seconds": 15.0,
+          "tilt_deg": 0.05956633588702518
+        },
+        {
+          "seconds": 16.0,
+          "tilt_deg": 0.08044989602755508
+        },
+        {
+          "seconds": 17.0,
+          "tilt_deg": 0.08894436961612168
+        },
+        {
+          "seconds": 18.0,
+          "tilt_deg": 0.09354987227593027
+        },
+        {
+          "seconds": 19.0,
+          "tilt_deg": 0.08838033524194576
+        },
+        {
+          "seconds": 20.0,
+          "tilt_deg": 0.0808938452879652
+        },
+        {
+          "seconds": 21.0,
+          "tilt_deg": 0.06670869695237
+        },
+        {
+          "seconds": 22.0,
+          "tilt_deg": 0.05232828270144218
+        },
+        {
+          "seconds": 23.0,
+          "tilt_deg": 0.034317275445394875
+        },
+        {
+          "seconds": 24.0,
+          "tilt_deg": 0.018225200798842028
+        },
+        {
+          "seconds": 25.0,
+          "tilt_deg": 0.0011296160994107348
+        },
+        {
+          "seconds": 26.0,
+          "tilt_deg": 0.012430036706379629
+        },
+        {
+          "seconds": 27.0,
+          "tilt_deg": 0.025151140112722573
+        },
+        {
+          "seconds": 28.0,
+          "tilt_deg": 0.03340509421592538
+        },
+        {
+          "seconds": 29.0,
+          "tilt_deg": 0.03991717841726859
+        },
+        {
+          "seconds": 30.0,
+          "tilt_deg": 0.04188856291152108
+        }
+      ]
+    }
+  ],
+  "passed": true
+}

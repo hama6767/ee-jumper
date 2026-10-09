@@ -1,0 +1,254 @@
+{
+  "repository": "https://github.com/KingKongRobotics/jumper",
+  "commit": "61d065219fca767f3142c8f10aff59eae5a5a004",
+  "source_xml_sha256": "3342ca15a5bbcaf40e1f16dedb60044b91360dddae5f7f03f05eb3e6c830cf37",
+  "derived_xml_sha256": "4ab0a51aecc973006f89e1533d2ca0d1588bfdfb27a2a52c0d7813cd475bac9c",
+  "meshes": [
+    {
+      "source": "assets/jumper/urdf/jumper/meshes/visual/LF_palm_pad_b_link.stl",
+      "local": "meshes/LF_palm_pad_b_link.stl",
+      "sha256": "3acff9d1d21951868df1e0b170c88153e9605861bc3193eb82d8516607abb20e",
+      "bytes": 287384
+    },
+    {
+      "source": "assets/jumper/urdf/jumper/meshes/visual/RF_palm_pad_b_link.stl",
+      "local": "meshes/RF_palm_pad_b_link.stl",
+      "sha256": "793bc432bc333286093f1a5ba5e69b806c4d129a24829757e3b0c7c1ff48bbef",
+      "bytes": 296784
+    },
+    {
+      "source": "assets/jumper/urdf/jumper/meshes/visual/LM_foot_tip_link.stl",
+      "local": "meshes/LM_foot_tip_link.stl",
+      "sha256": "364dcfdbf94243f914272f024e6cd1cad95799ab427b38e0235bdadfd10193fc",
+      "bytes": 96784
+    },
+    {
+      "source": "assets/jumper/urdf/jumper/meshes/visual/RM_foot_tip_link.stl",
+      "local": "meshes/RM_foot_tip_link.stl",
+      "sha256": "d0e1306ebf0c47412d86dcce89923d3b7a41defecf8bc956bf67634a6202440b",
+      "bytes": 96784
+    },
+    {
+      "source": "assets/jumper/urdf/jumper/meshes/visual/LR_foot_tip_link.stl",
+      "local": "meshes/LR_foot_tip_link.stl",
+      "sha256": "a9f78dcf40dfa524087764fb2d7604b3411128426dc64bc412ada199c36294a9",
+      "bytes": 96784
+    },
+    {
+      "source": "assets/jumper/urdf/jumper/meshes/visual/RR_foot_tip_link.stl",
+      "local": "meshes/RR_foot_tip_link.stl",
+      "sha256": "dfd85194297519dc276d98647e34f1ed88fca2dd06e6d639ce4753cd839d868d",
+      "bytes": 96784
+    },
+    {
+      "source": "assets/jumper/meshes/base_link_col.STL",
+      "local": "meshes/base_link_col.STL",
+      "sha256": "68b4524bbdc344d94d7ecedc1ed1580c5acc6ea0c29d91fe0afd3193125406d2",
+      "bytes": 6284
+    },
+    {
+      "source": "assets/jumper/meshes/upper_shell_link_col.STL",
+      "local": "meshes/upper_shell_link_col.STL",
+      "sha256": "8da8944f3817b16e90f2680aaec2d66cc2ee29acd661e76d9efd0c032e7b0598",
+      "bytes": 6084
+    },
+    {
+      "source": "assets/jumper/meshes/display_module_link_col.STL",
+      "local": "meshes/display_module_link_col.STL",
+      "sha256": "eabcd70b0e8aa5df3dcaacbc39aef4569f4f5e082ac47b2f3812d0051bba1fc7",
+      "bytes": 5284
+    },
+    {
+      "source": "assets/jumper/meshes/tof_sensor_link_col.STL",
+      "local": "meshes/tof_sensor_link_col.STL",
+      "sha256": "034285a5663ed4baf656150b6c1674007b7d558edb2cfedc7792e9bc4b23ce3b",
+      "bytes": 5484
+    },
+    {
+      "source": "assets/jumper/meshes/camera_link_col.STL",
+      "local": "meshes/camera_link_col.STL",
+      "sha256": "87e569e9618b17524174cf7a0e9ed701a960344f79ae29d7a007f423ced0eb78",
+      "bytes": 784
+    },
+    {
+      "source": "assets/jumper/meshes/LF_shoulder_link_col.STL",
+      "local": "meshes/LF_shoulder_link_col.STL",
+      "sha256": "2ec17a16658e1f0f00c262efe1b7293b6989745dac460017d78b73281ec1c139",
+      "bytes": 6184
+    },
+    {
+      "source": "assets/jumper/meshes/LF_upper_arm_link_col.STL",
+      "local": "meshes/LF_upper_arm_link_col.STL",
+      "sha256": "2c27d432b34bdffb5b59b242c5ff6f98201d0e2e28093313f77ebe106867bc99",
+      "bytes": 5884
+    },
+    {
+      "source": "assets/jumper/meshes/LF_forearm_link_col.STL",
+      "local": "meshes/LF_forearm_link_col.STL",
+      "sha256": "9e16eb823f0dd0bf8ebc91659eecd4a80a84689ec929add44fd589e07a983449",
+      "bytes": 6184
+    },
+    {
+      "source": "assets/jumper/meshes/LF_palm_link_col.STL",
+      "local": "meshes/LF_palm_link_col.STL",
+      "sha256": "eade0561eb15c922e40d9b5ff84065a8a8e581e33c8d3fd0d2659d26d09899dc",
+      "bytes": 6084
+    },
+    {
+      "source": "assets/jumper/meshes/LF_palm_pad_f_link_col.STL",
+      "local": "meshes/LF_palm_pad_f_link_col.STL",
+      "sha256": "2ffdc177dd21572207dd05c2b2af5ba1b716fb81b0ca56de84ee90acf2ef6c4e",
+      "bytes": 4684
+    },
+    {
+      "source": "assets/jumper/meshes/LF_finger_link_col.STL",
+      "local": "meshes/LF_finger_link_col.STL",
+      "sha256": "7becb09ce6b69adb4c7a9da8c41f649dea4069927ccb0ffb60c8422a982fc061",
+      "bytes": 6084
+    },
+    {
+      "source": "assets/jumper/meshes/LF_finger_tip_link_col.STL",
+      "local": "meshes/LF_finger_tip_link_col.STL",
+      "sha256": "574526b440c9d2da656c7ae07a6053505c0fbb17f4e87acd291c6e1579936d4e",
+      "bytes": 6184
+    },
+    {
+      "source": "assets/jumper/meshes/LF_finger_grip_insert_link_col.STL",
+      "local": "meshes/LF_finger_grip_insert_link_col.STL",
+      "sha256": "8ef120709688dabd7cdc34bfb7708107b0ae8bf5c3f82d68fefd96b803366bf5",
+      "bytes": 5384
+    },
+    {
+      "source": "assets/jumper/meshes/LF_palm_grip_insert_link_col.STL",
+      "local": "meshes/LF_palm_grip_insert_link_col.STL",
+      "sha256": "cf8aeccd02ca1a931558890ada7834a33335aa6b5cfc37cdd8dfc122dfaf26c9",
+      "bytes": 4384
+    },
+    {
+      "source": "assets/jumper/meshes/RF_shoulder_link_col.STL",
+      "local": "meshes/RF_shoulder_link_col.STL",
+      "sha256": "6d8fb06511fdce72b770c17fbbef719f084f364a6b1abcf38c493b554be501a0",
+      "bytes": 5984
+    },
+    {
+      "source": "assets/jumper/meshes/RF_upper_arm_link_col.STL",
+      "local": "meshes/RF_upper_arm_link_col.STL",
+      "sha256": "dcd9f9aec1be925f9dacbb81bbe39439067137eb8fe5fd0c6a7c90bea879d4f1",
+      "bytes": 5984
+    },
+    {
+      "source": "assets/jumper/meshes/RF_forearm_link_col.STL",
+      "local": "meshes/RF_forearm_link_col.STL",
+      "sha256": "3523972ffd335900039ec2c0355a331dab96e8374f6e4667edcfe9e462fa8891",
+      "bytes": 6284
+    },
+    {
+      "source": "assets/jumper/meshes/RF_palm_link_col.STL",
+      "local": "meshes/RF_palm_link_col.STL",
+      "sha256": "db2908b66dea0bafebb59dcd8c79eb1bcfa7361deab8158cf9cd3d039f75cc5c",
+      "bytes": 6184
+    },
+    {
+      "source": "assets/jumper/meshes/RF_palm_pad_f_link_col.STL",
+      "local": "meshes/RF_palm_pad_f_link_col.STL",
+      "sha256": "fc675bf34315eae68b8c4d7a3c52086737289fa9255de065b0a02c999b1a6c19",
+      "bytes": 4484
+    },
+    {
+      "source": "assets/jumper/meshes/RF_palm_grip_insert_link_col.STL",
+      "local": "meshes/RF_palm_grip_insert_link_col.STL",
+      "sha256": "806aa4932a85a007ee58946393439408ccdc33c7557e71b7671e5c7bafea214e",
+      "bytes": 4284
+    },
+    {
+      "source": "assets/jumper/meshes/RF_finger_link_col.STL",
+      "local": "meshes/RF_finger_link_col.STL",
+      "sha256": "ad7698060eda431b012551862e41c7ddd5b5bc2cb50c590ed5978f4f2c5779c8",
+      "bytes": 6284
+    },
+    {
+      "source": "assets/jumper/meshes/RF_finger_grip_insert_link_col.STL",
+      "local": "meshes/RF_finger_grip_insert_link_col.STL",
+      "sha256": "7fd2c6ca2af55173086ccd26290c5eeea355e3c35e8e452fe598ff1d2898d122",
+      "bytes": 5284
+    },
+    {
+      "source": "assets/jumper/meshes/RF_finger_tip_link_col.STL",
+      "local": "meshes/RF_finger_tip_link_col.STL",
+      "sha256": "c3a6ed313ea3c3cf9edfa7e99cf7398def750b85e1f71c0fe99d8c9116d660f0",
+      "bytes": 6184
+    },
+    {
+      "source": "assets/jumper/meshes/LM_hip_link_col.STL",
+      "local": "meshes/LM_hip_link_col.STL",
+      "sha256": "8ab7541f40c421119d3b84a2c20b2c9599c2733a2ffad4c20ab075aa9a750e5d",
+      "bytes": 6284
+    },
+    {
+      "source": "assets/jumper/meshes/LM_thigh_link_col.STL",
+      "local": "meshes/LM_thigh_link_col.STL",
+      "sha256": "1b97a532b19524f150dbe08ca066e6958d80bfe247c7d0253e5ef86f3a0c3d27",
+      "bytes": 6184
+    },
+    {
+      "source": "assets/jumper/meshes/LM_calf_link_col.STL",
+      "local": "meshes/LM_calf_link_col.STL",
+      "sha256": "69cb67a77563e74dcbebce8d151139c845f6b58a4d93a39a7c66e301fc718219",
+      "bytes": 5684
+    },
+    {
+      "source": "assets/jumper/meshes/RM_hip_link_col.STL",
+      "local": "meshes/RM_hip_link_col.STL",
+      "sha256": "44c1339a43cf0dc1b77c2dcc6bed840c2ae83bd097ad8d300d62b91f7934ea76",
+      "bytes": 6184
+    },
+    {
+      "source": "assets/jumper/meshes/RM_thigh_link_col.STL",
+      "local": "meshes/RM_thigh_link_col.STL",
+      "sha256": "3f50890ec0b1ce4dc11f9e37d0d130e454c48bff30ba6bc660cbf662c2f14824",
+      "bytes": 6284
+    },
+    {
+      "source": "assets/jumper/meshes/RM_calf_link_col.STL",
+      "local": "meshes/RM_calf_link_col.STL",
+      "sha256": "8afb3ef3e8f1b8d15fed84dfb75c51d6de8f2ccbaa601143da038418a3c3c89b",
+      "bytes": 5684
+    },
+    {
+      "source": "assets/jumper/meshes/LR_hip_link_col.STL",
+      "local": "meshes/LR_hip_link_col.STL",
+      "sha256": "c419095963b65825a65ba075269b526459e29a209357a61d3492dd07e3299779",
+      "bytes": 6284
+    },
+    {
+      "source": "assets/jumper/meshes/LR_thigh_link_col.STL",
+      "local": "meshes/LR_thigh_link_col.STL",
+      "sha256": "1b97a532b19524f150dbe08ca066e6958d80bfe247c7d0253e5ef86f3a0c3d27",
+      "bytes": 6184
+    },
+    {
+      "source": "assets/jumper/meshes/LR_calf_link_col.STL",
+      "local": "meshes/LR_calf_link_col.STL",
+      "sha256": "69cb67a77563e74dcbebce8d151139c845f6b58a4d93a39a7c66e301fc718219",
+      "bytes": 5684
+    },
+    {
+      "source": "assets/jumper/meshes/RR_hip_link_col.STL",
+      "local": "meshes/RR_hip_link_col.STL",
+      "sha256": "44c1339a43cf0dc1b77c2dcc6bed840c2ae83bd097ad8d300d62b91f7934ea76",
+      "bytes": 6184
+    },
+    {
+      "source": "assets/jumper/meshes/RR_thigh_link_col.STL",
+      "local": "meshes/RR_thigh_link_col.STL",
+      "sha256": "3f50890ec0b1ce4dc11f9e37d0d130e454c48bff30ba6bc660cbf662c2f14824",
+      "bytes": 6284
+    },
+    {
+      "source": "assets/jumper/meshes/RR_calf_link_col.STL",
+      "local": "meshes/RR_calf_link_col.STL",
+      "sha256": "8afb3ef3e8f1b8d15fed84dfb75c51d6de8f2ccbaa601143da038418a3c3c89b",
+      "bytes": 5684
+    }
+  ]
+}

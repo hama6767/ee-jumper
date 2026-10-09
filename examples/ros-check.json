@@ -1,0 +1,24 @@
+{
+  "ros_domain_id": "179",
+  "odometry_messages": 624,
+  "target_messages": 625,
+  "selected_strokes": [
+    "+x",
+    "timeout"
+  ],
+  "watchdog_home_return": true,
+  "real_viewer": true,
+  "idle_seconds": 2,
+  "idle_max_displacement_m": 1.3031292546698699e-17,
+  "first_position_m": [
+    -9.047635447743556e-22,
+    -2.4841755653395303e-23,
+    1.0
+  ],
+  "last_position_m": [
+    0.06288823546998518,
+    0.001999542779725888,
+    1.0102399000422262
+  ],
+  "passed": true
+}

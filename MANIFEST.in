@@ -1,0 +1,10 @@
+include LICENSE NOTICE
+include CONTRIBUTING.md requirements-tested.txt
+recursive-include docs *.md *.txt
+recursive-include docs/media *.png
+recursive-include scripts *.py
+recursive-include examples *.json
+
+include CMakeLists.txt package.xml
+recursive-include launch *.py
+recursive-include resource *.in

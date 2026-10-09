@@ -1,0 +1,47 @@
+[build-system]
+requires = ["setuptools>=77"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "ee-jumper"
+version = "0.1.0"
+description = "A minimal MuJoCo swimming research sandbox derived from Jumper"
+readme = "README.md"
+requires-python = ">=3.10"
+license = "Apache-2.0"
+license-files = ["LICENSE", "NOTICE"]
+dependencies = ["mujoco>=3.3,<4", "gymnasium>=1.0,<2", "numpy>=1.24,<3"]
+
+[project.urls]
+Homepage = "https://github.com/hama6767/ee-jumper"
+Issues = "https://github.com/hama6767/ee-jumper/issues"
+
+[project.optional-dependencies]
+dev = ["pytest>=8", "build>=1", "ruff>=0.11"]
+render = ["pillow>=10"]
+gui = ["PySide6-Essentials>=6.8.3,<6.9"]
+rl = ["stable-baselines3>=2.4,<3"]
+
+[project.scripts]
+ee-jumper = "ee_jumper.cli:main"
+ee-jumper-learn-displacement = "ee_jumper.learn_displacement:main"
+ee-jumper-learn-cycles = "ee_jumper.learn_cycles:main"
+ee-jumper-ros = "ee_jumper.ros_bridge:main"
+ee-jumper-keyboard = "ee_jumper.keyboard:main"
+ee-jumper-gui = "ee_jumper.dashboard:main"
+ee-jumper-stroke = "ee_jumper.cycle_demo:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+ee_jumper = ["assets/jumper/*.xml", "assets/jumper/*.json", "assets/jumper/meshes/*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+
+[tool.ruff]
+line-length = 100
+
+[tool.ruff.lint]
+select = ["E4", "E7", "E9", "F", "I"]

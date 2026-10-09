@@ -1,0 +1,9 @@
+# Versions used for the recorded CPU experiment (Python 3.10.12).
+# Use: python -m pip install -e '.[dev,gui,render]' -c requirements-tested.txt
+mujoco==3.15.0
+gymnasium==1.4.0
+numpy==2.2.6
+pillow==12.3.0
+pytest==9.1.1
+stable-baselines3==2.9.0
+PySide6-Essentials==6.8.3

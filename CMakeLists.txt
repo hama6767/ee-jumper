@@ -1,0 +1,21 @@
+cmake_minimum_required(VERSION 3.16)
+project(ee_jumper)
+find_package(ament_cmake REQUIRED)
+find_package(ament_cmake_python REQUIRED)
+ament_python_install_package(${PROJECT_NAME} PACKAGE_DIR src/ee_jumper)
+
+# The ROS installation usually uses the system Python. The simulator can use
+# a matching venv containing MuJoCo, without adding it to ROS core dependencies.
+if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/.venv/bin/python")
+  set(_default_python "${CMAKE_CURRENT_SOURCE_DIR}/.venv/bin/python")
+else()
+  set(_default_python "/usr/bin/python3")
+endif()
+set(EE_JUMPER_PYTHON "${_default_python}" CACHE FILEPATH "Python with MuJoCo and ROS rclpy")
+configure_file(resource/runtime.json.in runtime.json @ONLY)
+install(FILES "${CMAKE_CURRENT_BINARY_DIR}/runtime.json" DESTINATION share/${PROJECT_NAME})
+install(DIRECTORY launch DESTINATION share/${PROJECT_NAME} FILES_MATCHING PATTERN "*.py")
+install(DIRECTORY examples DESTINATION share/${PROJECT_NAME} FILES_MATCHING PATTERN "*.json")
+install(DIRECTORY docs DESTINATION share/${PROJECT_NAME} FILES_MATCHING PATTERN "*.md" PATTERN "*.txt" PATTERN "*.png")
+install(FILES LICENSE NOTICE README.md DESTINATION share/${PROJECT_NAME})
+ament_package()

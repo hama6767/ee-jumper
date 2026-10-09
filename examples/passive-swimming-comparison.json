@@ -1,0 +1,80 @@
+[
+  {
+    "direction": "+x",
+    "before_m": 0.44360339262072984,
+    "after_m": 0.4497024101684929,
+    "before_peak_rotation_deg": 16.654686484963268,
+    "after_peak_rotation_deg": 13.300589298671092,
+    "quality": {
+      "axial_displacement_m": 0.4497024101684929,
+      "lateral_displacement_m": 0.007697480289372412,
+      "valid": true,
+      "score": 0.4391337260531288
+    }
+  },
+  {
+    "direction": "-x",
+    "before_m": 0.4283257951974195,
+    "after_m": 0.42436651514008006,
+    "before_peak_rotation_deg": 23.443280186472524,
+    "after_peak_rotation_deg": 9.696687500112368,
+    "quality": {
+      "axial_displacement_m": 0.42436651514008006,
+      "lateral_displacement_m": 0.05999051379643931,
+      "valid": true,
+      "score": 0.39477382812082795
+    }
+  },
+  {
+    "direction": "+y",
+    "before_m": 0.30444432233505697,
+    "after_m": 0.3033722206958666,
+    "before_peak_rotation_deg": 23.52667974156502,
+    "after_peak_rotation_deg": 7.55387646156804,
+    "quality": {
+      "axial_displacement_m": 0.3033722206958666,
+      "lateral_displacement_m": 0.008984344091987615,
+      "valid": true,
+      "score": 0.29559704916766155
+    }
+  },
+  {
+    "direction": "-y",
+    "before_m": 0.4278029573597701,
+    "after_m": 0.425332854866606,
+    "before_peak_rotation_deg": 25.963115724268835,
+    "after_peak_rotation_deg": 12.36363657676627,
+    "quality": {
+      "axial_displacement_m": 0.425332854866606,
+      "lateral_displacement_m": 0.0349106387311989,
+      "valid": true,
+      "score": 0.4045040002279931
+    }
+  },
+  {
+    "direction": "+z",
+    "before_m": 0.1696132363288474,
+    "after_m": 0.16770162910433606,
+    "before_peak_rotation_deg": 20.051621866822067,
+    "after_peak_rotation_deg": 16.517736550022033,
+    "quality": {
+      "axial_displacement_m": 0.16770162910433606,
+      "lateral_displacement_m": 0.011786375999147882,
+      "valid": true,
+      "score": 0.15390772173821549
+    }
+  },
+  {
+    "direction": "-z",
+    "before_m": 0.12879117675462404,
+    "after_m": 0.12375804139892599,
+    "before_peak_rotation_deg": 14.81709186508209,
+    "after_peak_rotation_deg": 4.190053127169577,
+    "quality": {
+      "axial_displacement_m": 0.12375804139892599,
+      "lateral_displacement_m": 0.029428926207727038,
+      "valid": true,
+      "score": 0.10968637237839135
+    }
+  }
+]

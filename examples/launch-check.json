@@ -1,0 +1,15 @@
+{
+  "passed": true,
+  "real_viewer": true,
+  "real_command_gui": true,
+  "ros_domain_id": "179",
+  "idle_drift_m": 8.456691469625003e-18,
+  "x_progress_after_4_wall_seconds_m": 0.2771667761427536,
+  "odometry_messages": 597,
+  "com_messages": 596,
+  "command_messages": 47,
+  "space_stops_commands": true,
+  "q_shuts_down_launch": true,
+  "gui": "PySide6 with embedded MuJoCo",
+  "launch_exit_code": 0
+}
