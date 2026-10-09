@@ -30,7 +30,7 @@ ee-jumper-gui --library examples/strokes-xyz.json
 
 `gui`は検証済みのPySide6 6.8系（Qt Widgetsを含むEssentials）を使用します。Qt WebEngine等は不要です。
 GUIにはOpenGLとデスクトップ表示が必要です。UbuntuでQtのxcbプラグインが起動しない場合は
-`sudo apt install libxcb-cursor0 libxkbcommon-x11-0`を確認してください。
+`sudo apt install libegl1 libgl1 libopengl0 libxcb-cursor0 libxkbcommon-x11-0 libxcb-icccm4 libxcb-keysyms1`を確認してください。
 
 | 操作 | 動作 |
 |---|---|

@@ -90,7 +90,7 @@ colcon build --packages-select ee_jumper \
 
 環境変数 `EE_JUMPER_PYTHON` でも起動時の既定値を指定できます。
 GUIはPySide6（Essentials）を使います。OpenGLとデスクトップのDISPLAYが必要です。
-UbuntuでQtのxcbプラグインが不足する場合は `sudo apt install libxcb-cursor0 libxkbcommon-x11-0`。
+UbuntuでQtのxcbプラグインが不足する場合は `sudo apt install libegl1 libgl1 libopengl0 libxcb-cursor0 libxkbcommon-x11-0 libxcb-icccm4 libxcb-keysyms1`。
 画面を使わない環境では `viewer:=false teleop:=none` にします。
 学習データ・コードを変更したら `colcon build --packages-select ee_jumper` でインストール先も更新してください。
 
