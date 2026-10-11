@@ -13,7 +13,9 @@ class Swimmer:
     def __init__(self, library, water=None):
         self.library = library
         self.water = water or Water()
-        self.model = make_model("free", self.water)
+        self.model = make_model(
+            "free", self.water, joint_limit_margin_rad=library.get("joint_limit_margin_rad", 0.0)
+        )
         self.data = mujoco.MjData(self.model)
         self.base = self.model.body("base_link").id
         self.reset()

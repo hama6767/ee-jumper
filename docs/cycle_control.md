@@ -5,7 +5,11 @@
 座標は機体Xが前、Yが左、Zが上です。通常の操作は
 [ROS 2 launchによる一括起動](ros_launch.md)を使ってください。
 
-## 変更したこと
+現在は[PPOによる追加微調整](ppo_refinement.md)を反映しています。
+18関節の制限を両端各10°拡張し、振幅上限1.8 radで+X・+Zの改善を採用しました。
+以降の旧新比較はCEM導入時・浮心導入時の記録で、最新の比較はリンク先を参照してください。
+
+## CEM導入時に変更したこと
 
 - 振幅の探索上限を0.9 radから1.6 radに拡大。ただし各関節の可動域の90%以内に収めます。
 - 周期を1.2秒から1秒に短縮。元モデルの関節範囲と2 N·mのサーボトルク上限は維持します。
@@ -44,11 +48,11 @@
 上記は浮心オフセット導入前の記録です。現在の検証原本は次節に示します。
 
 
-## 浮心を10 mm上げた現在のモデル
+## 浮心を10 mm上げた時点のモデル（PPO微調整前）
 
 既存の6泳法の係数を保持し、受動安定化を加えたモデルで自由遊泳・固定推力計の両方を再計測しました。
-現在の `examples/strokes-xyz.json` と速度割り当てには、この新しい計測値を使用します。
-泳法の再学習は行っていません。結果は [`passive-swimming-comparison.json`](../examples/passive-swimming-comparison.json) に保存しています。
+この時点のライブラリは `examples/strokes-xyz-cem.json` です。
+浮心導入時には泳法の再学習は行っていません。結果は [`passive-swimming-comparison.json`](../examples/passive-swimming-comparison.json) に保存しています。
 
 | 方向 | 6秒変位 cm | 最大姿勢変化（導入前 → 現在） |
 |---|---:|---:|
@@ -62,7 +66,7 @@
 姿勢変化はyawも含む初期姿勢からの回転角です。復元作用があるのはroll / pitchです。
 0.08 m/sを10秒指令したときの軸方向変位は、+X 76.6 cm、-X 71.5 cm、+Y 51.7 cm、-Y 71.3 cm、+Z 27.5 cm、-Z 21.0 cmでした。
 物理刻み0.5 ms・制御5 msへの変更による6秒変位の差は 0.13〜0.31%です。
-検証原本: [`strokes-validation.json`](../examples/strokes-validation.json)。
+最新の検証原本: [`strokes-validation.json`](../examples/strokes-validation.json)（PPO採用後の値へ更新）。
 
 ## 軌道と評価
 

@@ -41,11 +41,22 @@ class Water:
             raise ValueError("current must contain three finite velocities")
 
 
-def make_model(mode: str = "planar", water: Water | None = None) -> mujoco.MjModel:
+def make_model(
+    mode: str = "planar", water: Water | None = None, *, joint_limit_margin_rad: float = 0.0
+) -> mujoco.MjModel:
     if mode not in ("planar", "free", "tethered"):
         raise ValueError("mode must be 'planar', 'free' or 'tethered'")
     water = water or Water()
+    if not np.isfinite(joint_limit_margin_rad) or not 0 <= joint_limit_margin_rad <= np.deg2rad(20):
+        raise ValueError("joint_limit_margin_rad must be between 0 and 20 degrees")
     root = ET.parse(ASSETS / "robot.xml").getroot()
+    ET.SubElement(
+        root.find("visual"),
+        "headlight",
+        ambient="0.15 0.15 0.15",
+        diffuse="0.4 0.4 0.4",
+        specular="0.1 0.1 0.1",
+    )
     custom = ET.SubElement(root, "custom")
     ET.SubElement(custom, "numeric", name="buoyancy_height_m", data=str(water.buoyancy_height_m))
     root.find("compiler").set("meshdir", str(ASSETS))
@@ -97,6 +108,13 @@ def make_model(mode: str = "planar", water: Water | None = None) -> mujoco.MjMod
     actuator = ET.SubElement(root, "actuator")
     for joint in root.findall(".//worldbody//joint"):
         if joint.get("class") == "motor":
+            # Demo-only extra travel on the 18 swimming joints. Preserve the
+            # attributed XML, finger/wrist limits, and the 2 N m torque limit.
+            if int(joint.get("name").split("_J")[1][0]) <= 2:
+                low, high = map(float, joint.get("range").split())
+                joint.set(
+                    "range", f"{low - joint_limit_margin_rad} {high + joint_limit_margin_rad}"
+                )
             ET.SubElement(
                 actuator,
                 "position",
@@ -111,11 +129,22 @@ def make_model(mode: str = "planar", water: Water | None = None) -> mujoco.MjMod
     ET.SubElement(
         asset,
         "texture",
+        name="background",
+        type="skybox",
+        builtin="gradient",
+        rgb1="0.10 0.13 0.16",
+        rgb2="0.28 0.33 0.37",
+        width="512",
+        height="3072",
+    )
+    ET.SubElement(
+        asset,
+        "texture",
         name="grid",
         type="2d",
         builtin="checker",
-        rgb1="0.035 0.10 0.14",
-        rgb2="0.055 0.15 0.19",
+        rgb1="0.12 0.14 0.16",
+        rgb2="0.16 0.18 0.20",
         width="512",
         height="512",
     )
@@ -124,7 +153,7 @@ def make_model(mode: str = "planar", water: Water | None = None) -> mujoco.MjMod
         "material",
         name="floor",
         texture="grid",
-        texrepeat="12 12",
+        texrepeat="3 3",
         texuniform="true",
         reflectance="0.1",
     )
@@ -141,8 +170,8 @@ def make_model(mode: str = "planar", water: Water | None = None) -> mujoco.MjMod
         contype="0",
         conaffinity="0",
     )
-    ET.SubElement(world, "light", pos="0 0 4", dir="0 0 -1", diffuse="0.8 0.9 1")
-    ET.SubElement(world, "light", pos="2 -2 3", dir="-1 1 -1", diffuse="0.5 0.6 0.7")
+    ET.SubElement(world, "light", pos="0 0 4", dir="0 0 -1", diffuse="0.45 0.45 0.45")
+    ET.SubElement(world, "light", pos="2 -2 3", dir="-1 1 -1", diffuse="0.18 0.20 0.24")
     ET.SubElement(
         world,
         "geom",

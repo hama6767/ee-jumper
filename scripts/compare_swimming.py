@@ -19,7 +19,12 @@ def evaluate(job):
     cycles = round(seconds / period)
     if not np.isclose(cycles * period, seconds):
         raise ValueError("Comparison duration must be a whole number of cycles for both libraries")
-    bench = DynamicBench(period, mode="free", max_excursion=library.get("max_excursion_rad", 0.9))
+    bench = DynamicBench(
+        period,
+        mode="free",
+        joint_limit_margin_rad=library.get("joint_limit_margin_rad", 0.0),
+        max_excursion=library.get("max_excursion_rad", 0.9),
+    )
     metrics = bench.evaluate(library["strokes"][name]["parameters"], 0, cycles)
     return metrics
 

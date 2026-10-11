@@ -9,7 +9,7 @@ XYZの6方向に泳ぐ周期運動をCPUで学習するOSSです。必要な衝�
 ![PySide6 swimming dashboard](docs/media/dashboard.png)
 
 - **MuJoCo**: 抗力・揚力・中性浮力。浮心を重心の10 mm上に置き、roll / pitchが受動的に安定。
-- **6方向の学習済み泳法**: 1秒周期、最大2 N·m。自由遊泳での正味移動量を重視したCEM探索。
+- **6方向の学習済み泳法**: 1秒周期、最大2 N·m。CEMで探索し、PPOで改善を確認した方向を更新。
 - **PySide6**: 3D表示、XYZ操作、速度・姿勢・変位・機械パワーのグラフ、22関節一覧、CSV出力。
 - **ROS 2**: `ros2 launch`で統合デモを起動。外部の`Twist`指令でも同じコントローラを利用。
 - **Python API**: ROS / GUIを入れずに評価・学習できるGymnasium環境。
@@ -35,10 +35,13 @@ GUIにはOpenGLとデスクトップ表示が必要です。UbuntuでQtのxcbプ
 | 操作 | 動作 |
 |---|---|
 | W / S、A / D、R / F | 機体X、Y、Zの正 / 負方向へ泳ぐ |
-| Space / STOP STROKING | 関節をホームへ戻す。惰性は残る |
-| Reset at rest | 位置・姿勢・計測をリセット |
+| Space / Stop | 関節をホームへ戻す。惰性は残る |
+| Reset | 位置・姿勢・計測をリセット |
 | Tilt 25° | 傾けてリセットし、受動的に水平へ戻る様子を見る |
 | ドラッグ / ホイール | カメラ回転 / ズーム |
+| Perspective / Side / Top | 視点プリセット |
+| Tab / Presentation | 操作欄・グラフを隠して3D表示を拡大 |
+| F11 | 全画面を切り替え |
 | Q / Esc | 終了 |
 
 指令はラッチ式です。キーを離しても継続し、Spaceで解除します。
@@ -57,7 +60,7 @@ ros2 launch ee_jumper swim.launch.py
 ```
 
 3Dと操作を含むPySide6の1画面が開きます。
-外部ノードから操作するときは **Local keyboard / buttons** のチェックを外し、
+外部ノードから操作するときは **Keyboard control** のチェックを外し、
 `/ee_jumper/cmd_vel`へ`geometry_msgs/Twist`を送ってください。
 画面が不要なら`viewer:=false teleop:=none`で起動できます。
 [ROS設定・トピック・起動オプション](docs/ros_launch.md)。
@@ -71,13 +74,23 @@ ee-jumper-stroke --library examples/strokes-xyz.json --direction +x --cycles 6 -
 # 6方向を正味移動量で探索し直す（CPU、CEM）
 ee-jumper-learn-displacement --warm-start examples/strokes-xyz.json \
   --generations 16 --population 20 --workers 4 --seed 51 \
-  --period 1 --max-excursion 1.6 --output runs/strokes.json
+  --period 1 --max-excursion 1.8 --output runs/strokes.json
+
+# 既存周期運動の係数をPPOで微調整。候補は検証するまでデモに使いません。
+python -m pip install -e '.[rl]'
+ee-jumper-refine-ppo --library examples/strokes-xyz-cem.json \
+  --steps 1024 --envs 4 --seed 73 --output runs/ppo-refine
+python scripts/evaluate_ppo.py --baseline examples/strokes-xyz-cem.json \
+  --directory runs/ppo-refine --output runs/ppo-refine/selected.json
 ```
 
-現在のモデルで静止から6秒泳いだ変位は、+X **45.0 cm**、−X **42.4 cm**、
-+Y **30.3 cm**、−Y **42.5 cm**、+Z **16.8 cm**、−Z **12.4 cm**です。
+現在のモデルで静止から6秒泳いだ変位は、+X **50.0 cm**、−X **42.4 cm**、
++Y **30.3 cm**、−Y **42.5 cm**、+Z **17.7 cm**、−Z **12.4 cm**です。
 25°の傾きは、動作なしで10秒後にroll / pitchとも1°未満まで戻ります。
-[計測と学習方法](docs/cycle_control.md)、[検証記録](docs/validation.md)。
+[PPOの学習・採否比較](docs/ppo_refinement.md)、[計測と周期制御](docs/cycle_control.md)、[検証記録](docs/validation.md)。
+
+PPOは方向から周期運動の係数を出す微調整です。毎時刻の状態から関節指令を生成するE2E制御ではありません。
+採用済みの係数をJSONへ書き出しているため、デモの実行にPyTorchは不要です。
 
 ## コードの入口
 
@@ -85,6 +98,7 @@ ee-jumper-learn-displacement --warm-start examples/strokes-xyz.json \
 |---|---|
 | `model.py` | 水中モデルと`step_water`。各物理ステップで浮心オフセットの復元トルクを計算 |
 | `cycles.py` / `learn_displacement.py` | 周期軌道、測定、CEM探索 |
+| `refine_ppo.py` / `scripts/evaluate_ppo.py` | PPOによる微調整、独立した条件での採否判定 |
 | `control.py` | 6方向の泳法を周期ごとに選ぶXYZ速度コントローラ |
 | `simulation.py` | GUI / ROS共通のシミュレーションループ |
 | `dashboard.py` / `ros_bridge.py` | PySide6表示 / ROSメッセージ変換 |
@@ -101,5 +115,7 @@ ee-jumper-learn-displacement --warm-start examples/strokes-xyz.json \
 
 上流のApache-2.0ライセンスと帰属は[NOTICE](NOTICE)、[UPSTREAM_NOTICE](docs/UPSTREAM_NOTICE.txt)、
 [モデルの出典・SHA-256](src/ee_jumper/assets/jumper/provenance.json)に記録しています。
-元の関節範囲・質量・慣性を保持し、浮力用のダミー質量は追加していません。
+配布元XML・質量・慣性を保持し、浮力用のダミー質量は追加していません。
+現在のデモでは泳ぐ18関節の範囲を生成時に両端各10°広げます。手首・指と2 N·mの上限は維持します。
+可動域の拡張はシミュレーション用で、実機の可動域を示すものではありません。
 [設計メモとクライミング案の比較](docs/design.md)、[貢献方法](CONTRIBUTING.md)。

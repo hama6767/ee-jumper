@@ -43,7 +43,7 @@ def send_key(connection, window, key):
 def find_control_window(connection):
     def walk(window):
         title = window.get_wm_name() or ""
-        if "EE Jumper" in title and "XYZ control" in title:
+        if title == "Jumper":
             return window
         for child in window.query_tree().children:
             found = walk(child)

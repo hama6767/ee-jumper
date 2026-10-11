@@ -19,7 +19,7 @@ source install/setup.bash
 ros2 launch ee_jumper swim.launch.py
 ```
 
-PySide6の **EE Jumper · XYZ control · Swim lab** が1画面で開きます。
+PySide6の **Jumper** が1画面で開きます。
 3D表示・XYZ操作・速度／姿勢／変位／パワーのグラフ・22関節の状態一覧を統合しています。
 初期状態はゼロ指令です。キーを押すまで泳ぎません。
 3D部分をドラッグすると視点が回転し、ホイールでズームできます。
@@ -31,6 +31,8 @@ PySide6の **EE Jumper · XYZ control · Swim lab** が1画面で開きます。
 | A / D | 機体Yの左 / 右 |
 | R / F | 機体Zの上 / 下 |
 | Space / Stop | 全軸ゼロ、関節をホームへ戻す |
+| Tab / Presentation | 操作欄・グラフを隠して3D表示を拡大 |
+| F11 | 全画面を切り替え |
 | Q / Esc / 操作画面を閉じる | シミュレータを含めて終了 |
 | launchでCtrl-C | 統合デモを終了 |
 
@@ -64,7 +66,7 @@ ros2 launch ee_jumper swim.launch.py duration:=10
 出力は `/ee_jumper/joint_states`、`/ee_jumper/joint_targets`、`/ee_jumper/odom`、`/ee_jumper/stroke`、
 全体重心位置 `/ee_jumper/com_position` (`geometry_msgs/PointStamped`)。
 `topic_prefix` を変えると入力・出力・操作画面の接続先がまとめて変わります。
-統合GUIで外部指令を使う場合は **Local keyboard / buttons** をオフにしてください。
+統合GUIで外部指令を使う場合は **Keyboard control** をオフにしてください。
 チェックを外すと最後にゼロ指令を1回送り、GUIからの定期送信を止めます。
 0.5秒のコマンド途絶で泳法を停止します。GUIのSpaceボタンは外部操作中でもゼロを1回送ります。
 `teleop:=none` では従来の `ee-jumper-keyboard` や外部ノードから指令を送れます。

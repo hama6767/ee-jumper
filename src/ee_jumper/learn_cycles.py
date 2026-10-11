@@ -332,6 +332,11 @@ def train_library(
 
 def load_library(path, require_feasible=True):
     library = json.loads(Path(path).read_text())
+    if require_feasible and (
+        library.get("validation_pending", False)
+        or library.get("ppo_refinement", {}).get("validation_pending", False)
+    ):
+        raise ValueError("Unvalidated motion library; run scripts/evaluate_ppo.py first")
     if library.get("format") not in ("ee-jumper-strokes-v1", "ee-jumper-strokes-v2") or set(
         library.get("strokes", {})
     ) != set(DIRECTIONS):
@@ -341,6 +346,9 @@ def load_library(path, require_feasible=True):
     excursion = library.get("max_excursion_rad", 0.9)
     if not np.isfinite(excursion) or not 0 < excursion <= 2:
         raise ValueError("Invalid maximum joint excursion")
+    margin = library.get("joint_limit_margin_rad", 0.0)
+    if not np.isfinite(margin) or not 0 <= margin <= np.deg2rad(20):
+        raise ValueError("Invalid joint limit margin")
     for name, record in library["strokes"].items():
         p = np.asarray(record["parameters"])
         if (

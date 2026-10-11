@@ -3,7 +3,7 @@ include CONTRIBUTING.md requirements-tested.txt
 recursive-include docs *.md *.txt
 recursive-include docs/media *.png
 recursive-include scripts *.py
-recursive-include examples *.json
+recursive-include examples *.json *.zip
 
 include CMakeLists.txt package.xml
 recursive-include launch *.py

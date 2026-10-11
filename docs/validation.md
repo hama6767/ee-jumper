@@ -2,6 +2,7 @@
 
 このページは初回の前進デモの記録です。追加した6方向の周期遊泳とROS 2操作については
 [周期遊泳の検証・操作手順](cycle_control.md)を参照してください。
+最新のPPO微調整・採否は[PPOの記録](ppo_refinement.md)にあります。
 
 2026-10-09、Linux / Python 3.10.12、MuJoCo 3.15.0、Gymnasium 1.4.0、
 NumPy 2.2.6で実施。GPUは使用していません。
@@ -147,6 +148,20 @@ xvfb-run -a python scripts/check_dashboard.py
 xvfb-run -a python scripts/check_launch.py
 ```
 
-GUI検証はPython 3.10 / PySide6-Essentials 6.8.3。描画は800×450・20 Hz、
+この時点のGUI検証はPython 3.10 / PySide6-Essentials 6.8.3。描画は800×450・20 Hz、
 高負荷な影・反射・マルチサンプリングを省き、Xvfbでも約1倍速で動作しました。
 `ros2 launch`からのW指令4秒で約27.7 cm前進し、Space / Qによる停止・終了も確認しました。
+
+## コンペ用GUIとPPO微調整（2026-10-11）
+
+大きなタイトルと説明文を外し、3D表示を中心にしたツールバー・操作欄・計測表示へ変更しました。
+視点プリセット、全体重心の軌跡、Tabでの表示拡大、F11の全画面を追加しています。
+描画は960×540、2サンプルのアンチエイリアスを使用します。
+
+- コア41テストに合格。可動域拡張、補正ゼロの角度軌道保存、PPO試行、未検証候補の再生拒否を含みます。
+- PPOの1,024試行から+X/+Zを採用。元版との6秒比較は+11.3% / +5.3%。±Yは12秒検証で不採用。
+- 物理0.5 ms／制御5 msの差は全方向0.16〜0.33%。10秒のXYZ閉ループでも全方向に進みます。
+- 実際のQt画面で静止、25°からの受動復元、キー操作、表示切り替え、CSV、リセット、正常終了を確認。
+
+原本: [PPOの全比較](../examples/ppo-comparison.json)、[GUI](../examples/dashboard-check.json)、
+[ROS launch](../examples/launch-check.json)。

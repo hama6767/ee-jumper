@@ -51,11 +51,15 @@ def displacement_quality(metrics, direction):
 
 
 def _measure(job):
-    parameters, period, excursion, fine, mode = job
-    key = (period, excursion, fine, mode)
+    parameters, period, excursion, fine, mode, margin = job
+    key = (period, excursion, fine, mode, margin)
     if key not in _BENCHES:
         bench = DynamicBench(
-            period, control_dt=0.01 if fine else 0.02, mode=mode, max_excursion=excursion
+            period,
+            control_dt=0.01 if fine else 0.02,
+            mode=mode,
+            max_excursion=excursion,
+            joint_limit_margin_rad=margin,
         )
         if not fine:
             bench.model.opt.timestep = 0.002
@@ -96,7 +100,8 @@ def train(
         previous["period_s"] != period or previous.get("max_excursion_rad", 0.9) != max_excursion
     ):
         raise ValueError("Partial training requires matching period and excursion")
-    m = make_model("free")
+    margin = previous.get("joint_limit_margin_rad", 0.0)
+    m = make_model("free", joint_limit_margin_rad=margin)
     old = StrokeSpace(m, previous["period_s"], previous.get("max_excursion_rad", 0.9))
     new = StrokeSpace(m, period, max_excursion)
     ratio = (old.scale[new.active] / new.scale[new.active])[:, None]
@@ -111,6 +116,7 @@ def train(
         "format": "ee-jumper-strokes-v2",
         "period_s": period,
         "max_excursion_rad": max_excursion,
+        "joint_limit_margin_rad": margin,
         "frame": previous["frame"],
         "objective": "6-second free-swim net COM displacement",
         "minimum_force_n": 0.02,
@@ -144,7 +150,8 @@ def train(
                 candidates[1] = np.clip(candidates[0] * 1.12, -1, 1)
                 measurements = list(
                     pool.map(
-                        _measure, [(p, period, max_excursion, False, "free") for p in candidates]
+                        _measure,
+                        [(p, period, max_excursion, False, "free", margin) for p in candidates],
                     )
                 )
                 combined = archives[n] + [
@@ -179,7 +186,10 @@ def train(
             fine = list(
                 pool.map(
                     _measure,
-                    [(c["parameters"], period, max_excursion, True, "free") for c in records],
+                    [
+                        (c["parameters"], period, max_excursion, True, "free", margin)
+                        for c in records
+                    ],
                 )
             )
             valid = [
@@ -196,7 +206,7 @@ def train(
                     f"No valid free-swim candidate for {n}; search candidates saved to {output}"
                 )
             best = max(valid, key=lambda c: c["displacement_quality"]["score"])
-            tether = _measure((best["parameters"], period, max_excursion, True, "tethered"))
+            tether = _measure((best["parameters"], period, max_excursion, True, "tethered", margin))
             best["metrics"] = tether
             best["quality"] = quality(tether, n)  # diagnostic, not a gate on swimming
             targets = new.trajectory(np.linspace(0, 1, 1001), best["parameters"])[0]

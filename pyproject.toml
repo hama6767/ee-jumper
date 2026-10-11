@@ -25,6 +25,7 @@ rl = ["stable-baselines3>=2.4,<3"]
 [project.scripts]
 ee-jumper = "ee_jumper.cli:main"
 ee-jumper-learn-displacement = "ee_jumper.learn_displacement:main"
+ee-jumper-refine-ppo = "ee_jumper.refine_ppo:main"
 ee-jumper-learn-cycles = "ee_jumper.learn_cycles:main"
 ee-jumper-ros = "ee_jumper.ros_bridge:main"
 ee-jumper-keyboard = "ee_jumper.keyboard:main"

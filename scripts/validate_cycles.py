@@ -20,7 +20,10 @@ def validate_one(job):
     name, library, speed = job
     reference = library["strokes"][name]
     bench = DynamicBench(
-        library["period_s"], control_dt=0.005, max_excursion=library.get("max_excursion_rad", 0.9)
+        library["period_s"],
+        control_dt=0.005,
+        joint_limit_margin_rad=library.get("joint_limit_margin_rad", 0.0),
+        max_excursion=library.get("max_excursion_rad", 0.9),
     )
     bench.model.opt.timestep = 0.0005
     bench.substeps = 10
@@ -35,6 +38,7 @@ def validate_one(job):
             library["period_s"],
             control_dt=0.005,
             mode="free",
+            joint_limit_margin_rad=library.get("joint_limit_margin_rad", 0.0),
             max_excursion=library["max_excursion_rad"],
         )
         free_bench.model.opt.timestep = 0.0005
@@ -44,6 +48,7 @@ def validate_one(job):
         library["period_s"],
         control_dt=0.01,
         mode="free",
+        joint_limit_margin_rad=library.get("joint_limit_margin_rad", 0.0),
         max_excursion=library.get("max_excursion_rad", 0.9),
     )
     bench.reset()

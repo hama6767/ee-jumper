@@ -12,6 +12,7 @@ import mujoco
 import numpy as np
 from PySide6.QtCore import QCoreApplication, QEvent, QPointF, QRectF, Qt, QTimer
 from PySide6.QtGui import (
+    QAction,
     QColor,
     QImage,
     QKeySequence,
@@ -32,9 +33,12 @@ from PySide6.QtWidgets import (
     QMainWindow,
     QProgressBar,
     QPushButton,
+    QSizePolicy,
+    QSplitter,
     QTableWidget,
     QTableWidgetItem,
     QTabWidget,
+    QToolBar,
     QVBoxLayout,
     QWidget,
 )
@@ -43,22 +47,23 @@ from ee_jumper.keyboard import KeyboardCommand
 from ee_jumper.learn_cycles import load_library
 from ee_jumper.simulation import Swimmer
 
-COLORS = ("#55dec7", "#ffb85e", "#8fa7ff")
+COLORS = ("#ce6562", "#82ae83", "#77a6d1")
 STYLE = """
-QWidget { background: #101c2a; color: #e3edf6; font: 12px sans-serif; }
-QMainWindow { background: #101c2a; }
-QLabel#title { font-size: 25px; font-weight: bold; }
-QLabel#metric { font: 18px monospace; color: #55dec7; padding: 7px; background: #17283a; }
-QLabel#muted { color: #99afc4; }
-QPushButton { background: #22384c; border: 1px solid #37536c; border-radius: 5px; padding: 10px; }
-QPushButton:hover { background: #30556a; }
-QPushButton#stop { background: #753d42; border-color: #d87c7c; font-weight: bold; }
-QDoubleSpinBox, QTableWidget { background: #17283a; border: 1px solid #2b4358; padding: 4px; }
-QHeaderView::section { background: #22384c; color: #e3edf6; border: none; padding: 6px; }
-QTabBar::tab { background: #17283a; padding: 8px 18px; }
-QTabBar::tab:selected { background: #30556a; }
-QProgressBar { background: #17283a; border: none; text-align: center; height: 16px; }
-QProgressBar::chunk { background: #348b83; }
+QWidget { background: #252729; color: #e1e1e1; font: 12px sans-serif; }
+QToolBar { background: #303234; border: none; spacing: 6px; padding: 3px; }
+QLabel#readout { font: 13px monospace; padding: 4px 0; }
+QLabel#muted { color: #a8aaac; }
+QPushButton { background: #393b3d; border: 1px solid #505254; border-radius: 2px; padding: 7px; }
+QPushButton:hover { background: #484b4e; }
+QPushButton:checked { background: #505860; }
+QPushButton#stop { background: #713e3e; border-color: #965353; }
+QDoubleSpinBox, QTableWidget { background: #202224; border: 1px solid #505254; padding: 4px; }
+QHeaderView::section { background: #303234; color: #ddd; border: none; padding: 5px; }
+QTabBar::tab { background: #303234; padding: 7px 16px; }
+QTabBar::tab:selected { background: #45494c; }
+QProgressBar { background: #202224; border: 1px solid #414447; text-align: center; height: 16px; }
+QProgressBar::chunk { background: #51606b; }
+QSplitter::handle { background: #3d4042; height: 4px; }
 """
 
 
@@ -69,7 +74,7 @@ class Plot(QWidget):
         super().__init__()
         self.title, self.names = title, names
         self.samples = np.empty((0, len(names) + 1))
-        self.setMinimumSize(280, 145)
+        self.setMinimumSize(230, 150)
 
     def set_samples(self, samples):
         self.samples = np.asarray(samples)
@@ -78,8 +83,8 @@ class Plot(QWidget):
     def paintEvent(self, event):
         p = QPainter(self)
         p.setRenderHint(QPainter.RenderHint.Antialiasing)
-        p.fillRect(self.rect(), QColor("#142336"))
-        p.setPen(QColor("#e3edf6"))
+        p.fillRect(self.rect(), QColor("#242628"))
+        p.setPen(QColor("#dddddd"))
         p.drawText(12, 20, self.title)
         for i, name in enumerate(self.names):
             p.setPen(QColor(COLORS[i % 3]))
@@ -94,9 +99,9 @@ class Plot(QWidget):
         left, right = max(0, t[-1] - 30), max(1, t[-1])
         for fraction in (0, 0.5, 1):
             yp = area.bottom() - fraction * area.height()
-            p.setPen(QPen(QColor("#2b4054"), 1))
+            p.setPen(QPen(QColor("#424548"), 1))
             p.drawLine(QPointF(area.left(), yp), QPointF(area.right(), yp))
-            p.setPen(QColor("#99afc4"))
+            p.setPen(QColor("#a8aaac"))
             p.drawText(
                 QRectF(2, yp - 8, 50, 18),
                 Qt.AlignmentFlag.AlignRight,
@@ -121,13 +126,17 @@ class Viewport(QLabel):
     def __init__(self, sim):
         super().__init__()
         self.sim = sim
-        sim.model.vis.global_.offwidth = 800
-        sim.model.vis.global_.offheight = 450
-        sim.model.vis.quality.offsamples = 0
-        self.renderer = mujoco.Renderer(sim.model, height=450, width=800)
+        sim.model.vis.global_.offwidth = 960
+        sim.model.vis.global_.offheight = 540
+        sim.model.vis.quality.offsamples = 2
+        self.renderer = mujoco.Renderer(sim.model, height=540, width=960)
         self.camera = mujoco.MjvCamera()
         self.camera.distance, self.camera.azimuth, self.camera.elevation = 0.95, 125, -27
         self.setMinimumSize(480, 270)
+        self.setSizePolicy(QSizePolicy.Policy.Ignored, QSizePolicy.Policy.Ignored)
+        self.trail = deque(maxlen=240)
+        self.trail_time = -1.0
+        self.show_trail = True
         self.setAlignment(Qt.AlignmentFlag.AlignCenter)
         self.last_mouse = None
 
@@ -138,23 +147,30 @@ class Viewport(QLabel):
         # Shadow maps are expensive on software OpenGL (e.g. laptop/Xvfb demos).
         self.renderer.scene.flags[mujoco.mjtRndFlag.mjRND_SHADOW] = False
         self.renderer.scene.flags[mujoco.mjtRndFlag.mjRND_REFLECTION] = False
-        # Display the combined center of mass and center of buoyancy.
-        center = sim.data.subtree_com[sim.base]
-        up = sim.data.xmat[sim.base].reshape(3, 3)[:, 2]
-        for point, color in (
-            (center, [1, 0.45, 0.35, 1]),
-            (center + sim.water.buoyancy_height_m * up, [0.2, 1, 0.85, 1]),
-        ):
+        # A world-fixed COM trail makes translation visible with a following camera.
+        if sim.data.time < self.trail_time:
+            self.trail.clear()
+            self.trail_time = -1.0
+        if sim.data.time - self.trail_time >= 0.1:
+            self.trail.append(sim.data.subtree_com[sim.base].copy())
+            self.trail_time = sim.data.time
+        if self.show_trail:
             scene = self.renderer.scene
-            mujoco.mjv_initGeom(
-                scene.geoms[scene.ngeom],
-                mujoco.mjtGeom.mjGEOM_SPHERE,
-                np.full(3, 0.004),
-                point,
-                np.eye(3).ravel(),
-                np.array(color),
-            )
-            scene.ngeom += 1
+            points = list(self.trail)
+            for start, end in zip(points, points[1:]):
+                if np.linalg.norm(end - start) < 1e-5:
+                    continue
+                geom = scene.geoms[scene.ngeom]
+                mujoco.mjv_initGeom(
+                    geom,
+                    mujoco.mjtGeom.mjGEOM_CAPSULE,
+                    np.zeros(3),
+                    np.zeros(3),
+                    np.eye(3).ravel(),
+                    np.array([0.87, 0.88, 0.90, 0.85]),
+                )
+                mujoco.mjv_connector(geom, mujoco.mjtGeom.mjGEOM_CAPSULE, 0.0015, start, end)
+                scene.ngeom += 1
         rgb = self.renderer.render()
         frame = QImage(
             rgb.data, rgb.shape[1], rgb.shape[0], rgb.strides[0], QImage.Format.Format_RGB888
@@ -197,8 +213,8 @@ class Dashboard(QMainWindow):
         self.history = deque(maxlen=300)
         self.closed = False
         self.stop_requested = False
-        self.setWindowTitle("EE Jumper · XYZ control · Swim lab")
-        self.resize(1260, 900)
+        self.setWindowTitle("Jumper")
+        self.resize(1360, 850)
         self.setStyleSheet(STYLE)
         if ros:
             import rclpy
@@ -210,97 +226,118 @@ class Dashboard(QMainWindow):
             rclpy.init(signal_handler_options=SignalHandlerOptions.NO)
             self.node = create_bridge(sim, prefix)
             self.publisher = self.node.create_publisher(Twist, prefix.rstrip("/") + "/cmd_vel", 10)
+        toolbar = QToolBar()
+        toolbar.setMovable(False)
+        self.addToolBar(toolbar)
+        reset_action = toolbar.addAction("Reset")
+        reset_action.triggered.connect(lambda: self.reset())
+        tilt_action = toolbar.addAction("Tilt 25°")
+        tilt_action.triggered.connect(lambda: self.reset(25))
+        toolbar.addSeparator()
+        self.view = Viewport(sim) if viewer else None
+        for label, azimuth, elevation in (
+            ("Perspective", 125, -27),
+            ("Side", 90, -5),
+            ("Top", 90, -89),
+        ):
+            action = toolbar.addAction(label)
+            action.triggered.connect(
+                lambda checked=False, a=azimuth, e=elevation: self.set_view(a, e)
+            )
+        toolbar.addSeparator()
+        self.presentation = QAction("Presentation [Tab]", self)
+        self.presentation.setCheckable(True)
+        self.presentation.toggled.connect(self.set_presentation)
+        toolbar.addAction(self.presentation)
+        full = toolbar.addAction("Full screen [F11]")
+        full.triggered.connect(self.toggle_fullscreen)
+        toolbar.addSeparator()
+        toolbar.addAction("Save CSV").triggered.connect(self.export_csv)
         central = QWidget()
         self.setCentralWidget(central)
         layout = QVBoxLayout(central)
-        heading = QHBoxLayout()
-        title = QLabel("EE JUMPER   /   SWIM LAB")
-        title.setObjectName("title")
-        heading.addWidget(title)
-        self.state_label = QLabel()
-        heading.addWidget(self.state_label, alignment=Qt.AlignmentFlag.AlignRight)
-        layout.addLayout(heading)
-        subtitle = QLabel("Passive attitude stability  ·  Neutral buoyancy  ·  Six learned strokes")
-        subtitle.setObjectName("muted")
-        layout.addWidget(subtitle)
-        main = QHBoxLayout()
-        self.view = Viewport(sim) if viewer else None
-        main.addWidget(self.view if viewer else QLabel("3D rendering disabled"), 3)
-        panel = QVBoxLayout()
-        self.local = QCheckBox("Local keyboard / buttons")
+        layout.setContentsMargins(5, 5, 5, 2)
+        splitter = QSplitter(Qt.Orientation.Vertical)
+        layout.addWidget(splitter)
+        stage = QWidget()
+        main = QHBoxLayout(stage)
+        main.setContentsMargins(0, 0, 0, 0)
+        main.addWidget(self.view if viewer else QLabel("3D view disabled"), 1)
+        self.controls = QWidget()
+        self.controls.setFixedWidth(224)
+        panel = QVBoxLayout(self.controls)
+        panel.setContentsMargins(12, 6, 6, 6)
+        self.local = QCheckBox("Keyboard control")
+        self.local.setToolTip("Uncheck to accept commands from an external ROS node.")
         self.local.setFocusPolicy(Qt.FocusPolicy.NoFocus)
         self.local.setChecked(True)
         self.local.setEnabled(ros)
         self.local.toggled.connect(self.change_authority)
         panel.addWidget(self.local)
-        hint = QLabel(
-            "W/S = X   A/D = Y   R/F = Z\nCommands latch; Space stops stroking.\nDrag: orbit camera  ·  Scroll: zoom"
-        )
-        hint.setObjectName("muted")
-        panel.addWidget(hint)
+        panel.addSpacing(10)
+        panel.addWidget(QLabel("Target speed"))
         self.speed = QDoubleSpinBox()
         self.speed.setRange(0.01, 0.10)
         self.speed.setSingleStep(0.01)
         self.speed.setValue(speed)
-        self.speed.setSuffix(" m/s target")
+        self.speed.setSuffix(" m/s")
         self.speed.setFocusPolicy(Qt.FocusPolicy.ClickFocus)
         self.speed.valueChanged.connect(self.change_speed)
         panel.addWidget(self.speed)
         keys = QGridLayout()
         for row, (a, b, axis) in enumerate((("w", "s", "X"), ("a", "d", "Y"), ("r", "f", "Z"))):
             for col, (key, sign) in enumerate(((a, "+"), (b, "−"))):
-                button = QPushButton(f"{sign}{axis}   [{key.upper()}]")
+                button = QPushButton(f"{sign}{axis}  [{key.upper()}]")
                 button.setFocusPolicy(Qt.FocusPolicy.NoFocus)
                 button.clicked.connect(lambda checked=False, k=key: self.press(k))
                 keys.addWidget(button, row, col)
         panel.addLayout(keys)
-        stop = QPushButton("STOP STROKING   [Space]")
+        stop = QPushButton("Stop  [Space]")
         stop.setObjectName("stop")
         stop.setFocusPolicy(Qt.FocusPolicy.NoFocus)
         stop.clicked.connect(lambda: self.press("space"))
         panel.addWidget(stop)
         self.command_label = QLabel()
+        self.command_label.setObjectName("muted")
         panel.addWidget(self.command_label)
+        panel.addSpacing(12)
         self.phase = QProgressBar()
         self.phase.setRange(0, 100)
         panel.addWidget(self.phase)
-        for text, fn in (
-            ("Reset at rest", self.reset),
-            ("Tilt 25° · passive recovery", lambda: self.reset(25)),
-            ("Export last 30 s as CSV", self.export_csv),
-        ):
-            button = QPushButton(text)
-            button.setFocusPolicy(Qt.FocusPolicy.NoFocus)
-            button.clicked.connect(lambda checked=False, action=fn: action())
-            panel.addWidget(button)
-        main.addLayout(panel, 1)
-        layout.addLayout(main, 3)
-        markers = QLabel(
-            "COM: coral  ·  Buoyancy center: mint (+10 mm along body Z)  |  Q: close demo"
-        )
-        markers.setObjectName("muted")
-        layout.addWidget(markers)
-        cards = QHBoxLayout()
+        panel.addSpacing(12)
         self.cards = []
         for _ in range(4):
             label = QLabel()
-            label.setObjectName("metric")
+            label.setObjectName("readout")
             self.cards.append(label)
-            cards.addWidget(label)
-        layout.addLayout(cards)
-        tabs = QTabWidget()
-        layout.addWidget(tabs, 2)
+            panel.addWidget(label)
+        panel.addStretch()
+        trace = QCheckBox("Show path")
+        trace.setChecked(True)
+        trace.setFocusPolicy(Qt.FocusPolicy.NoFocus)
+        trace.toggled.connect(
+            lambda checked: setattr(self.view, "show_trail", checked) if self.view else None
+        )
+        panel.addWidget(trace)
+        hint = QLabel("Drag to rotate · Scroll to zoom\nSpace to stop · Q to quit")
+        hint.setObjectName("muted")
+        panel.addWidget(hint)
+        main.addWidget(self.controls)
+        splitter.addWidget(stage)
+        self.tabs = QTabWidget()
+        splitter.addWidget(self.tabs)
         plots = QWidget()
         grid = QGridLayout(plots)
+        grid.setContentsMargins(0, 0, 0, 0)
         self.plots = [
-            Plot("COM velocity / body frame · m/s", ("X", "Y", "Z")),
-            Plot("Attitude · degrees", ("roll", "pitch", "yaw")),
-            Plot("COM displacement / world frame · m", ("X", "Y", "Z")),
-            Plot("Actuator mechanical power · W", ("Σ |τ ω|",)),
+            Plot("Velocity · m/s (body)", ("X", "Y", "Z")),
+            Plot("Attitude · deg", ("roll", "pitch", "yaw")),
+            Plot("Displacement · m (world)", ("X", "Y", "Z")),
+            Plot("Mechanical power · W", ("Σ |τ ω|",)),
         ]
         for i, plot in enumerate(self.plots):
-            grid.addWidget(plot, i // 2, i % 2)
-        tabs.addTab(plots, "Motion & energy")
+            grid.addWidget(plot, 0, i)
+        self.tabs.addTab(plots, "Measurements")
         self.joints = QTableWidget(sim.model.nu, 4)
         self.joints.setHorizontalHeaderLabels(["Joint", "Actual °", "Target °", "Torque N·m"])
         self.joints.horizontalHeader().setStretchLastSection(True)
@@ -308,16 +345,18 @@ class Dashboard(QMainWindow):
         for row, name in enumerate(sim.controller.stroke.names):
             for col in range(4):
                 self.joints.setItem(row, col, QTableWidgetItem(name if col == 0 else "0"))
-        tabs.addTab(self.joints, "22 actuators")
-        self.statusBar().showMessage(
-            "Ready · targets use body axes; displacement uses world axes. Stop allows coasting."
-        )
+        self.tabs.addTab(self.joints, "Joints")
+        splitter.setSizes([560, 190])
+        self.state_label = QLabel()
+        self.statusBar().addPermanentWidget(self.state_label)
         # Window shortcuts also work while the speed editor or joint table has focus.
         self.shortcuts = []
         for sequence, key in [(k.upper(), k) for k in KeyboardCommand.KEYS] + [
             ("Space", "space"),
             ("Q", "q"),
             ("Escape", "escape"),
+            ("Tab", "presentation"),
+            ("F11", "fullscreen"),
         ]:
             shortcut = QShortcut(QKeySequence(sequence), self)
             shortcut.activated.connect(lambda k=key: self.press(k))
@@ -332,6 +371,17 @@ class Dashboard(QMainWindow):
         self.display.start()
         self.refresh()
 
+    def set_view(self, azimuth, elevation):
+        if self.view:
+            self.view.camera.azimuth, self.view.camera.elevation = azimuth, elevation
+
+    def set_presentation(self, enabled):
+        self.controls.setVisible(not enabled)
+        self.tabs.setVisible(not enabled)
+
+    def toggle_fullscreen(self):
+        self.showNormal() if self.isFullScreen() else self.showFullScreen()
+
     def change_authority(self, local):
         self.command.press("space")
         # Send one zero when releasing local control, then stop publishing.
@@ -342,6 +392,12 @@ class Dashboard(QMainWindow):
         self.command.velocity[:] = [float(np.sign(v) * speed) for v in self.command.velocity]
 
     def press(self, key):
+        if key == "presentation":
+            self.presentation.toggle()
+            return
+        if key == "fullscreen":
+            self.toggle_fullscreen()
+            return
         if key in KeyboardCommand.KEYS and not self.local.isChecked():
             self.local.setChecked(True)
         keep = self.command.press(key)
@@ -422,19 +478,20 @@ class Dashboard(QMainWindow):
             self.view.draw()
         elapsed = time.monotonic() - self.origin_time
         self.state_label.setText(
-            f"{'ROS 2' if self.ros else 'STANDALONE'}  ·  {s.data.time:.1f} s  ·  {s.data.time / max(elapsed, 0.01):.2f}× realtime"
+            f"{'ROS 2' if self.ros else 'Local'}  ·  {s.data.time:.1f} s  ·  {s.data.time / max(elapsed, 0.01):.2f}× realtime"
         )
-        self.command_label.setText(
-            "Body target m/s:  " + "  ".join(f"{v:+.2f}" for v in s.controller.command)
-        )
+        self.command_label.setText("XYZ  " + "  ".join(f"{v:+.2f}" for v in s.controller.command))
         self.phase.setValue(round(s.output.phase * 100) if s.output else 0)
-        self.phase.setFormat(f"Stroke {s.status}  ·  %p%")
+        self.phase.setFormat(f"{s.status}  %p%")
         values = [
-            f"NET TRAVEL\n{np.linalg.norm(s.displacement) * 100:.1f} cm",
-            f"BODY SPEED\n{np.linalg.norm(s.velocity) * 100:.1f} cm/s",
-            f"ROLL / PITCH\n{s.attitude[0]:+.1f}° / {s.attitude[1]:+.1f}°",
-            f"MECH. WORK\n{s.energy:.2f} J",
+            f"Travel   {np.linalg.norm(s.displacement) * 100:6.1f} cm",
+            f"Speed    {np.linalg.norm(s.velocity) * 100:6.1f} cm/s",
+            f"R / P    {s.attitude[0]:+.1f}° / {s.attitude[1]:+.1f}°",
+            f"Work     {s.energy:6.2f} J",
         ]
+        self.statusBar().showMessage(
+            f"X {s.displacement[0]:+.3f} m    Y {s.displacement[1]:+.3f} m    Z {s.displacement[2]:+.3f} m"
+        )
         for card, value in zip(self.cards, values):
             card.setText(value)
         if s.data.time - self.last_sample >= 0.1 or not self.history:
@@ -454,9 +511,7 @@ class Dashboard(QMainWindow):
         ):
             for col, value in enumerate((actual, target, torque), 1):
                 self.joints.item(i, col).setText(f"{value:+.2f}")
-            self.joints.item(i, 3).setForeground(
-                QColor("#ffb85e" if abs(torque) > 1.8 else "#55dec7")
-            )
+            self.joints.item(i, 3).setForeground(QColor("#d6a367" if abs(torque) > 1.8 else "#ddd"))
 
     def export_csv(self):
         filename, _ = QFileDialog.getSaveFileName(

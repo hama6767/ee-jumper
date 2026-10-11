@@ -1,0 +1,26 @@
+[
+  {
+    "trials": 256,
+    "wall_seconds": 74.19842995499994,
+    "mean_episode_reward": -21.363790219999995,
+    "max_correction": 0.3252122700214386
+  },
+  {
+    "trials": 512,
+    "wall_seconds": 152.32454584900006,
+    "mean_episode_reward": -6.582669649999999,
+    "max_correction": 0.42024052143096924
+  },
+  {
+    "trials": 768,
+    "wall_seconds": 212.73254245199996,
+    "mean_episode_reward": -5.75735701,
+    "max_correction": 0.636293351650238
+  },
+  {
+    "trials": 1024,
+    "wall_seconds": 293.26111427499995,
+    "mean_episode_reward": -11.567427709999999,
+    "max_correction": 0.8713299036026001
+  }
+]

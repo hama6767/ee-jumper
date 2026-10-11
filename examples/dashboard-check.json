@@ -1,12 +1,14 @@
 {
   "idle_drift_m": 3.802740242855047e-18,
-  "roll_after_10s_deg": 0.24572331853547277,
-  "x_progress_4s_m": 0.29245408799248174,
-  "mechanical_work_j": 26.370615271403075,
+  "presentation_fullscreen_camera": true,
+  "roll_after_10s_deg": 0.20184116391888396,
+  "x_progress_4s_m": 0.3334719369742146,
+  "mechanical_work_j": 30.63817841468109,
   "space_stops_stroking": true,
+  "stop_works_in_presentation": true,
   "reset_clears_metrics": true,
   "passed": true,
   "real_pyside6_window": true,
   "embedded_mujoco": true,
-  "wall_seconds": 16.718226810975466
+  "wall_seconds": 26.704711920000136
 }

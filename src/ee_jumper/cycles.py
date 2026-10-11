@@ -231,11 +231,19 @@ class KinematicBench:
 
 
 class DynamicBench:
-    def __init__(self, period=2.0, control_dt=0.01, mode="tethered", max_excursion=0.9):
+    def __init__(
+        self,
+        period=2.0,
+        control_dt=0.01,
+        mode="tethered",
+        max_excursion=0.9,
+        joint_limit_margin_rad=0.0,
+        water=None,
+    ):
         if mode not in ("tethered", "free"):
             raise ValueError("Dynamic bench mode must be tethered or free")
-        self.mode, self.water = mode, Water()
-        self.model = make_model(mode)
+        self.mode, self.water = mode, water or Water()
+        self.model = make_model(mode, self.water, joint_limit_margin_rad=joint_limit_margin_rad)
         self.model.opt.disableflags |= int(mujoco.mjtDisableBit.mjDSBL_SENSOR)
         self.data = mujoco.MjData(self.model)
         self.stroke = StrokeSpace(self.model, period, max_excursion)
@@ -255,11 +263,24 @@ class DynamicBench:
         self.data.ctrl[:] = self.stroke.home
         mujoco.mj_forward(self.model, self.data)
 
-    def evaluate(self, parameters, warmup_cycles=3, measurement_cycles=2, callback=None):
+    def evaluate(
+        self,
+        parameters,
+        warmup_cycles=3,
+        measurement_cycles=2,
+        callback=None,
+        initial_quaternion=None,
+    ):
         if warmup_cycles < 0 or measurement_cycles < 1:
             raise ValueError("Invalid cycle counts")
         self.reset()
         m, d, s = self.model, self.data, self.stroke
+        if initial_quaternion is not None:
+            q = np.asarray(initial_quaternion, dtype=float)
+            if q.shape != (4,) or not np.isfinite(q).all() or np.linalg.norm(q) < 1e-10:
+                raise ValueError("initial_quaternion must be a finite nonzero WXYZ quaternion")
+            d.qpos[3:7] = q / np.linalg.norm(q)
+            mujoco.mj_forward(m, d)
         targets, _, _ = s.trajectory(
             np.arange(self.steps_per_cycle) / self.steps_per_cycle, parameters
         )

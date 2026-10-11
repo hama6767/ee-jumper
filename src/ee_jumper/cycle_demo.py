@@ -26,7 +26,10 @@ def main():
         parser.error("--cycles must be positive")
     library = load_library(args.library)
     bench = DynamicBench(
-        library["period_s"], mode=args.mode, max_excursion=library.get("max_excursion_rad", 0.9)
+        library["period_s"],
+        mode=args.mode,
+        joint_limit_margin_rad=library.get("joint_limit_margin_rad", 0.0),
+        max_excursion=library.get("max_excursion_rad", 0.9),
     )
     bench.reset()
     viewer = renderer = None
